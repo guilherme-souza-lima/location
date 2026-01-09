@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Provider</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Location Provider</h1>
+    <p>Share your location with the admin dashboard.</p>
+    <div>
+        <label for="provider-id">Device ID: </label>
+        <input type="text" id="provider-id" value="user-1">
+    </div>
+    <br>
+    <button id="start-btn">Start Tracking</button>
+    <div id="status">Disconnected</div>
+    <div id="coords"></div>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const statusDiv = document.getElementById('status');
+        const coordsDiv = document.getElementById('coords');
+        const providerIdInput = document.getElementById('provider-id');
+        let ws;
+        let watchId;
+
+        startBtn.addEventListener('click', () => {
+            if (ws) {
+                // Already connected, maybe stop?
+                return;
+            }
+
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            // Connect to the API port 1800
+            const wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=provider`;
+
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                statusDiv.textContent = 'Connected to Server';
+                statusDiv.style.color = 'green';
+                startGeolocation();
+            };
+
+            ws.onclose = () => {
+                statusDiv.textContent = 'Disconnected';
+                statusDiv.style.color = 'red';
+                stopGeolocation();
+                ws = null;
+            };
+
+            ws.onerror = (err) => {
+                console.error('WS Error', err);
+                statusDiv.textContent = 'Connection Error';
+                statusDiv.style.color = 'red';
+            };
+        });
+
+        function startGeolocation() {
+            if (!navigator.geolocation) {
+                statusDiv.textContent = 'Geolocation not supported';
+                return;
+            }
+
+            watchId = navigator.geolocation.watchPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                coordsDiv.textContent = `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}`;
+
+                const payload = {
+                    id: providerIdInput.value,
+                    lat: latitude,
+                    lng: longitude,
+                    info: `User ${providerIdInput.value}`
+                };
+
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify(payload));
+                    const time = new Date().toLocaleTimeString();
+                    statusDiv.textContent = `Sending data... (${time})`;
+                    statusDiv.style.color = 'blue';
+                }
+            }, (error) => {
+                console.error('Geo Error', error);
+                // Don't stop on timeout, just warn
+                statusDiv.textContent = 'Geolocation Warning: ' + error.message;
+            }, {
+                enableHighAccuracy: false, // Changed from true to avoid timeouts
+                timeout: 20000, // Increased to 20s
+                maximumAge: 10000
+            });
+        }
+
+        function stopGeolocation() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+        }
+    </script>
+</body>
+
+</html>
