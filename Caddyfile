@@ -1,0 +1,19 @@
+{
+    # Enable automatic HTTPS with internal CA for IP addresses
+    auto_https disable_redirects
+}
+
+# Admin Dashboard
+:1890 {
+    reverse_proxy frontend-admin:80
+}
+
+# User Location Provider
+:1880 {
+    reverse_proxy frontend-user:80
+}
+
+# Backend API (WebSocket)
+:1800 {
+    reverse_proxy backend:8080
+}
