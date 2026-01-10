@@ -246,9 +246,13 @@
             activePanel.classList.remove('hidden');
             statusMsg.textContent = "// INITIALIZING SENSORS...";
 
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            // Connect to the API port 1800
-            const wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=provider&id=${providerIdInput.value}`;
+            let wsUrl;
+            if (window.location.hostname.includes('cubevisservice.site')) {
+                wsUrl = `wss://api.location.cubevisservice.site/ws?type=provider&id=${providerIdInput.value}`;
+            } else {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=provider&id=${providerIdInput.value}`;
+            }
 
             ws = new WebSocket(wsUrl);
 

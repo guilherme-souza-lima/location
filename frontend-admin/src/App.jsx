@@ -12,8 +12,13 @@ function App() {
     let ws;
 
     const connect = () => {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=viewer`;
+      let wsUrl;
+      if (window.location.hostname.includes('cubevisservice.site')) {
+        wsUrl = 'wss://api.location.cubevisservice.site/ws?type=viewer';
+      } else {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=viewer`;
+      }
 
       console.log('Connecting to WebSocket:', wsUrl);
       ws = new WebSocket(wsUrl);
