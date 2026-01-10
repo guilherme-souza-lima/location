@@ -23,7 +23,7 @@ O projeto é dividido em três microsserviços principais, todos orquestrados vi
 - **Stack**: React + Vite + TailwindCSS + MapLibre/Mapbox.
 ### Design System ("Earth Tech")
 
-O projeto utiliza uma paleta de cores personalizada para uma estética industrial/clean:
+O projeto utiliza uma paleta de cores personalizada para uma estética industrial/clean, batizada de "Earth Tech".
 
 | Cor | Hex | Uso Sugerido |
 |-----|-----|--------------|
@@ -36,11 +36,11 @@ O projeto utiliza uma paleta de cores personalizada para uma estética industria
 - **Funcionalidades**:
     - **Mapa Interativo**: Renderiza marcadores em tempo real.
     - **Smart Selection**: Ao clicar num card lateral, o mapa voa até o alvo. Ao clicar novamente, reseta a visão global.
-    - **Feedback Visual**: Animações de pulso, tooltips detalhadas e indicadores de status online/offline.
+    - **UI Industrial**: Sidebar redesenhada com input de busca moderno, cards de status "Signal Lost" dedicados e feedback visual de hover.
 
 ### 3. 📱 Frontend User (Provider)
 - **Stack**: HTML5 + Vanilla JS + TailwindCSS (via CDN).
-- **Design System**: "Cyberpunk / Neural Link" (Tema Escuro).
+- **Design System**: "Earth Tech" (Tema Clean/Industrial).
 - **Funcionalidades**:
     - Captura a geolocalização do dispositivo (GPS) via Geolocation API.
     - Permite definir um **Nome de Operador** e **ID do Dispositivo**.
@@ -105,7 +105,7 @@ Para produção, utilizamos **Nginx** como *Reverse Proxy* para gerenciar certif
 1.  **WebSocket Seguro (WSS)**: Configuração preparada para produção, permitindo conexões criptografadas essenciais para segurança e funcionamento do GPS.
 2.  **In-Memory Persistence**: O Backend armazena a última posição de cada ID. Se você der F5 no Admin, os marcadores reaparecem instantaneamente (não começam vazios).
 3.  **Clean Disconnect**: Se um celular perde conexão ou fecha a aba, o Backend detecta o fim do stream TCP e envia um evento `type: "disconnect"` para o Admin, que remove o ícone do mapa.
-4.  **Z-Index & Overlays**: Soluções de UI aplicadas para garantir que inputs funcionem perfeitamente mesmo com elementos decorativos "Cyberpunk".
+4.  **UI Architecture**: Implementação do Design System "Earth Tech" com componentes isolados (Cards), Z-Index estratificado para overlays de mapa e feedback visual de conectividade.
 
 ---
 
