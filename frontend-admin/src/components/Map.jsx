@@ -14,17 +14,28 @@ const Map = ({ markers, selectedDeviceId }) => {
     const mapRef = React.useRef();
 
     // Fly to the Selected Device when it changes or updates
+    // Fly to the Selected Device when it changes or updates
     React.useEffect(() => {
-        if (selectedDeviceId && markers[selectedDeviceId] && mapRef.current) {
-            const marker = markers[selectedDeviceId];
-            mapRef.current.flyTo({
-                center: [marker.lng, marker.lat],
-                zoom: 16,
-                pitch: 45, // Add a slight pitch for 3D feel
-                essential: true
-            });
+        if (mapRef.current) {
+            if (selectedDeviceId && markers[selectedDeviceId]) {
+                const marker = markers[selectedDeviceId];
+                mapRef.current.flyTo({
+                    center: [marker.lng, marker.lat],
+                    zoom: 16,
+                    pitch: 45, // Add a slight pitch for 3D feel
+                    essential: true
+                });
+            } else if (!selectedDeviceId) {
+                // Reset view to initial state
+                mapRef.current.flyTo({
+                    center: [initialViewState.longitude, initialViewState.latitude],
+                    zoom: initialViewState.zoom,
+                    pitch: 0,
+                    essential: true
+                });
+            }
         }
-    }, [selectedDeviceId, markers]); // Trigger on selection change OR data update for that device
+    }, [selectedDeviceId, markers, initialViewState]); // Trigger on selection change OR data update for that device
 
     return (
         <div className="w-full h-full relative">

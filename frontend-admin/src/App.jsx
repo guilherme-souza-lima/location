@@ -74,7 +74,11 @@ function App() {
   }, []);
 
   const handleDeviceClick = (deviceId) => {
-    setSelectedDeviceId(deviceId);
+    if (selectedDeviceId === deviceId) {
+      setSelectedDeviceId(null);
+    } else {
+      setSelectedDeviceId(deviceId);
+    }
   };
 
   // Palette "Earth Tech":
