@@ -21,8 +21,18 @@ O projeto é dividido em três microsserviços principais, todos orquestrados vi
 
 ### 2. 🗺 Frontend Admin (Viewer)
 - **Stack**: React + Vite + TailwindCSS + MapLibre/Mapbox.
-- **Design System**: "Earth Tech" / Industrial Clean.
-    - Paleta de Cores: Creme (`#f0f0d8`), Café (`#5a372c`) e Ferrugem (`#c94b0c`).
+### Design System ("Earth Tech")
+
+O projeto utiliza uma paleta de cores personalizada para uma estética industrial/clean:
+
+| Cor | Hex | Uso Sugerido |
+|-----|-----|--------------|
+| **Café** | `#5a372c` | Texto Principal, Sidebar Escura |
+| **Oliva** | `#8b8b70` | Bordas, Textos Secundários |
+| **Menta** | `#98c7b0` | Status Sucesso, Detalhes |
+| **Creme** | `#f0f0d8` | Background Principal |
+| **Ferrugem**| `#c94b0c` | Ações Primárias, Destaques, Alertas |
+
 - **Funcionalidades**:
     - **Mapa Interativo**: Renderiza marcadores em tempo real.
     - **Smart Selection**: Ao clicar num card lateral, o mapa voa até o alvo. Ao clicar novamente, reseta a visão global.

@@ -4,39 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Link // Provider</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
-        rel="stylesheet">
+    <title>Location Service | Provider</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        mono: ['"JetBrains Mono"', 'monospace'],
                         sans: ['"Inter"', 'sans-serif'],
                     },
                     colors: {
-                        cyber: {
-                            black: '#050505',
-                            dark: '#0a0a0a',
-                            panel: '#111111',
-                            border: '#333333',
-                            primary: '#00ff9d', // Neon Green
-                            secondary: '#00e1ff', // Cyan
-                            text: '#e0e0e0',
-                            muted: '#666666'
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'scanline': 'scanline 8s linear infinite',
-                    },
-                    keyframes: {
-                        scanline: {
-                            '0%': { transform: 'translateY(-100%)' },
-                            '100%': { transform: 'translateY(100%)' }
+                        earth: {
+                            bg: '#f0f0d8',      // .color4
+                            card: '#ffffff',
+                            text: '#5a372c',    // .color1
+                            sub: '#8b8b70',     // .color2
+                            border: '#8b8b70',  // .color2
+                            primary: '#c94b0c', // .color5
+                            success: '#98c7b0', // .color3
                         }
                     }
                 }
@@ -45,179 +31,155 @@
     </script>
     <style>
         body {
-            background-color: #050505;
-            color: #e0e0e0;
-            background-image:
-                radial-gradient(circle at 50% 50%, rgba(0, 225, 255, 0.03) 0%, transparent 50%),
-                linear-gradient(rgba(0, 255, 157, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 157, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-        }
-
-        .cyber-border {
-            position: relative;
-            background: #111;
-            border: 1px solid #333;
-        }
-
-        .cyber-border::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: -1px;
-            width: 10px;
-            height: 10px;
-            border-top: 2px solid #00ff9d;
-            border-left: 2px solid #00ff9d;
-            transition: all 0.3s ease;
-        }
-
-        .cyber-border::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            right: -1px;
-            width: 10px;
-            height: 10px;
-            border-bottom: 2px solid #00ff9d;
-            border-right: 2px solid #00ff9d;
-            transition: all 0.3s ease;
-        }
-
-        .cyber-border:hover::before,
-        .cyber-border:hover::after {
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-        }
-
-        .glitch-text {
-            text-shadow: 2px 0 rgba(0, 255, 157, 0.2), -2px 0 rgba(0, 225, 255, 0.2);
-        }
-
-        .status-dot {
-            box-shadow: 0 0 10px currentColor;
+            background-color: #f0f0d8;
+            color: #5a372c;
         }
     </style>
 </head>
 
-<body class="h-screen w-full flex flex-col items-center justify-center p-4 font-sans overflow-hidden relative">
+<body class="h-screen w-full flex flex-col items-center justify-center p-4 font-sans">
 
-    <!-- Scanline Effect -->
-    <div
-        class="fixed inset-0 pointer-events-none z-0 opacity-10 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]">
-    </div>
+    <div class="z-10 w-full max-w-[400px]">
 
-    <div class="z-10 w-full max-w-md">
         <!-- Header -->
-        <div class="mb-8 text-center">
+        <div class="mb-8 text-center space-y-2">
             <div
-                class="inline-flex items-center gap-2 mb-2 text-cyber-primary border border-cyber-primary/30 px-3 py-1 rounded-full bg-cyber-primary/5">
-                <span class="w-2 h-2 rounded-full bg-cyber-primary animate-pulse status-dot"></span>
-                <span class="text-xs font-mono font-bold tracking-widest">SYSTEM READY</span>
+                class="inline-flex items-center justify-center bg-white border border-earth-border p-3 rounded-sm shadow-sm mb-2 text-earth-primary">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
             </div>
-            <h1 class="text-4xl font-black tracking-tighter text-white glitch-text mb-1">NEURAL<span
-                    class="text-cyber-primary">LINK</span></h1>
-            <p class="text-cyber-muted text-sm font-mono tracking-wide">LOCATION UPLINK TERMINAL</p>
+            <h1 class="text-2xl font-bold tracking-tight text-earth-text uppercase">Field Uplink</h1>
+            <p class="text-earth-sub text-sm font-medium">Secure Telemetry Bridge</p>
         </div>
 
         <!-- Main Card -->
-        <div class="cyber-border p-8 rounded-sm shadow-2xl backdrop-blur-sm bg-[#0a0a0a]/90">
+        <div class="bg-white border border-earth-border rounded-sm shadow-xl overflow-hidden p-6 md:p-8">
 
             <!-- Setup Section -->
             <div id="setup-panel" class="space-y-6">
-                <div class="space-y-2">
-                    <label class="text-xs font-mono text-cyber-secondary uppercase tracking-wider">Operative
-                        Name</label>
-                    <div class="relative group">
+
+                <div class="space-y-4">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-earth-sub">Operative
+                            Name</label>
                         <input type="text" id="provider-name"
-                            class="relative z-10 w-full bg-black border border-gray-800 text-white p-4 font-mono focus:border-cyber-primary focus:outline-none focus:ring-1 focus:ring-cyber-primary transistion-all rounded-sm placeholder-gray-700"
-                            placeholder="YOUR NAME">
+                            class="w-full bg-[#fdfdf5] border border-earth-border text-earth-text p-3.5 rounded-sm text-sm font-medium transition-all focus:outline-none focus:border-earth-primary focus:ring-1 focus:ring-earth-primary placeholder:text-earth-sub/50"
+                            placeholder="John Doe">
                     </div>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-mono text-cyber-secondary uppercase tracking-wider">Device
-                        Identity</label>
-                    <div class="relative group">
-                        <input type="text" id="provider-id" value="UNIT-ALPHA-01"
-                            class="relative z-10 w-full bg-black border border-gray-800 text-white p-4 font-mono focus:border-cyber-primary focus:outline-none focus:ring-1 focus:ring-cyber-primary transistion-all rounded-sm placeholder-gray-700"
-                            placeholder="ENTER ID...">
-                    </div>
-                </div>
-
-                <button id="start-btn"
-                    class="w-full group relative overflow-hidden bg-cyber-primary text-black font-bold font-mono py-4 px-6 tracking-wide hover:bg-white transition-colors duration-300">
-                    <span class="relative z-10 flex items-center justify-center gap-2">
-                        INITIATE UPLINK
-                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </span>
-                </button>
-            </div>
-
-            <!-- Active Section (Hidden by default) -->
-            <div id="active-panel" class="hidden space-y-6">
-                <div class="flex items-center justify-between border-b border-gray-800 pb-4">
-                    <div>
-                        <div class="text-[10px] text-cyber-muted font-mono uppercase">Status</div>
-                        <div id="connection-status"
-                            class="text-cyber-primary font-bold font-mono tracking-tight text-lg">ONLINE</div>
-                    </div>
-                    <div
-                        class="w-12 h-12 rounded-full border border-cyber-primary/20 flex items-center justify-center relative">
-                        <div class="absolute inset-0 rounded-full border border-t-cyber-primary animate-spin"></div>
-                        <div class="w-8 h-8 rounded-full bg-cyber-primary/10 flex items-center justify-center">
-                            <div class="w-2 h-2 bg-cyber-primary rounded-full animate-ping"></div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-earth-sub">Device ID</label>
+                        <div class="relative">
+                            <input type="text" id="provider-id" value="UNIT-ALPHA-01"
+                                class="w-full bg-[#fdfdf5] border border-earth-border text-earth-text p-3.5 rounded-sm text-sm font-mono transition-all focus:outline-none focus:border-earth-primary focus:ring-1 focus:ring-earth-primary placeholder:text-earth-sub/50 uppercase"
+                                placeholder="DEVICE-ID">
+                            <div
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-earth-sub bg-earth-bg px-2 py-0.5 rounded-sm border border-earth-border">
+                                AUTO</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-1">
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[10px] text-cyber-secondary font-mono uppercase">Latitude</span>
-                        <span id="lat-display" class="font-mono text-xl text-white">--.-----</span>
-                    </div>
-                    <div class="w-full bg-gray-900 h-1 overflow-hidden">
-                        <div class="h-full bg-cyber-secondary w-2/3 animate-pulse"></div>
-                    </div>
-                </div>
-
-                <div class="space-y-1">
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[10px] text-cyber-secondary font-mono uppercase">Longitude</span>
-                        <span id="lng-display" class="font-mono text-xl text-white">--.-----</span>
-                    </div>
-                    <div class="w-full bg-gray-900 h-1 overflow-hidden">
-                        <div class="h-full bg-cyber-secondary w-1/2 animate-pulse animation-delay-500"></div>
+                <div class="bg-earth-bg p-4 rounded-sm border border-earth-border/50">
+                    <div class="flex gap-3">
+                        <svg class="w-5 h-5 text-earth-sub flex-shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-xs text-earth-text leading-relaxed font-medium">
+                            Enable location services to proceed with uplink initialization.
+                        </p>
                     </div>
                 </div>
 
-                <div class="pt-4 mt-4 border-t border-dashed border-gray-800">
-                    <div class="w-full bg-black border border-red-900/50 p-3 flex items-center gap-3 group cursor-pointer hover:border-red-500/50 transition-colors"
-                        onclick="location.reload()">
-                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span class="text-xs font-mono text-red-400">TERMINATE CONNECTION</span>
-                    </div>
-                </div>
+                <button id="start-btn"
+                    class="w-full bg-earth-primary hover:bg-[#a63d0a] text-[#f0f0d8] font-bold py-4 px-6 rounded-sm shadow-md transition-all duration-200 flex items-center justify-center gap-2 group uppercase tracking-wider">
+                    <span>Iniciate Uplink</span>
+                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </button>
             </div>
 
-            <!-- Error/Status Info -->
-            <div id="status-msg" class="mt-4 text-center text-xs font-mono text-cyber-muted h-4">
-                // WAITING FOR INPUT...
+            <!-- Active Section (Hidden by default) -->
+            <div id="active-panel" class="hidden">
+
+                <div class="flex items-center justify-between mb-8 border-b border-earth-border/20 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="relative flex items-center justify-center h-3 w-3">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-earth-success opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-earth-success"></span>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-earth-sub uppercase tracking-wider">Status</div>
+                            <div id="connection-status" class="text-sm font-bold text-earth-text uppercase">
+                                Connecting...</div>
+                        </div>
+                    </div>
+                    <button onclick="location.reload()"
+                        class="p-2 text-earth-sub hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                        title="Disconnect">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-[#fdfdf5] p-4 rounded-sm border border-earth-border">
+                        <div class="text-[10px] font-bold text-earth-sub uppercase tracking-wider mb-1">Latitude</div>
+                        <div id="lat-display" class="font-mono text-lg font-bold text-earth-text tracking-tight">
+                            --.-----</div>
+                    </div>
+                    <div class="bg-[#fdfdf5] p-4 rounded-sm border border-earth-border">
+                        <div class="text-[10px] font-bold text-earth-sub uppercase tracking-wider mb-1">Longitude</div>
+                        <div id="lng-display" class="font-mono text-lg font-bold text-earth-text tracking-tight">
+                            --.-----</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center justify-center space-y-3 py-2">
+                    <div class="w-full bg-earth-bg rounded-full h-1.5 overflow-hidden border border-earth-border/30">
+                        <div class="h-full bg-earth-primary w-1/3 animate-[progress_2s_ease-in-out_infinite]"></div>
+                    </div>
+                    <span id="status-msg"
+                        class="text-[10px] font-mono font-medium text-earth-sub uppercase">Initializing...</span>
+                </div>
+
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="mt-8 text-center opacity-40 hover:opacity-100 transition-opacity">
-            <div class="text-[10px] font-mono text-white">SECURE CONNECTION v2.0.4</div>
-            <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-cyber-primary to-transparent mx-auto mt-2">
+        <div class="mt-8 text-center px-4">
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <div class="h-px w-8 bg-earth-border"></div>
+                <span class="text-[10px] uppercase font-bold text-earth-sub tracking-widest">Sys v3.0</span>
+                <div class="h-px w-8 bg-earth-border"></div>
             </div>
         </div>
     </div>
+
+    <style>
+        @keyframes progress {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(300%);
+            }
+        }
+    </style>
 
     <script>
         const startBtn = document.getElementById('start-btn');
@@ -234,17 +196,23 @@
         let ws;
         let watchId;
 
-        // Generate Random ID for easier testing
+        // Generate Random ID
         const randomId = 'UNIT-' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         providerIdInput.value = randomId;
 
         startBtn.addEventListener('click', () => {
             if (ws) return;
 
+            // Simple Validations
+            if (!providerNameInput.value.trim()) {
+                providerNameInput.focus();
+                return;
+            }
+
             // UI Transition
             setupPanel.classList.add('hidden');
             activePanel.classList.remove('hidden');
-            statusMsg.textContent = "// INITIALIZING SENSORS...";
+            statusMsg.textContent = "ESTABLISHING SECURE LINK...";
 
             let wsUrl;
             if (window.location.hostname.includes('cubevisservice.site')) {
@@ -257,34 +225,30 @@
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                connectionStatus.textContent = 'CONNECTED';
-                connectionStatus.className = 'text-cyber-primary font-bold font-mono tracking-tight text-lg';
-                statusMsg.textContent = "// STREAMING DATA PACKETS";
+                connectionStatus.textContent = 'LINK ESTABLISHED';
+                connectionStatus.classList.add('text-earth-success');
+                statusMsg.textContent = "TRANSMITTING TELEMETRY";
                 startGeolocation();
             };
 
             ws.onclose = () => {
-                connectionStatus.textContent = 'OFFLINE';
-                connectionStatus.className = 'text-red-500 font-bold font-mono tracking-tight text-lg blink';
-                statusMsg.textContent = "// CONNECTION LOST";
-                statusMsg.className = "mt-4 text-center text-xs font-mono text-red-500 h-4";
+                connectionStatus.textContent = 'DISCONNECTED';
+                connectionStatus.className = 'text-sm font-bold text-red-600 uppercase';
+                statusMsg.textContent = "SIGNAL LOST. RECONNECTING...";
                 stopGeolocation();
                 ws = null;
-
-                // Keep active panel shown but error state
-                // setTimeout(() => location.reload(), 3000); // Auto reset?
             };
 
             ws.onerror = (err) => {
                 console.error('WS Error', err);
-                connectionStatus.textContent = 'ERR_Connection';
-                connectionStatus.className = 'text-red-500 font-bold font-mono tracking-tight text-lg';
+                connectionStatus.textContent = 'CONNECTION ERROR';
+                connectionStatus.classList.add('text-red-600');
             };
         });
 
         function startGeolocation() {
             if (!navigator.geolocation) {
-                statusMsg.textContent = "// ERROR: NO GEOLOCATION SUPPORT";
+                statusMsg.textContent = "ERROR: GEOLOCATION NOT SUPPORTED";
                 return;
             }
 
@@ -306,12 +270,10 @@
 
                 if (ws && ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify(payload));
-                    // Blink logic or log could go here
                 }
             }, (error) => {
                 console.error('Geo Error', error);
-                statusMsg.textContent = `// GEO_ERR: ${error.message}`;
-                statusMsg.className = "mt-4 text-center text-xs font-mono text-red-400 h-4";
+                statusMsg.textContent = `LOCATION ERROR: ${error.message}`;
             }, {
                 enableHighAccuracy: true,
                 timeout: 20000,
