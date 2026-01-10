@@ -4,110 +4,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Location Provider</title>
+    <title>Neural Link // Provider</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            black: '#050505',
+                            dark: '#0a0a0a',
+                            panel: '#111111',
+                            border: '#333333',
+                            primary: '#00ff9d', // Neon Green
+                            secondary: '#00e1ff', // Cyan
+                            text: '#e0e0e0',
+                            muted: '#666666'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: sans-serif;
-            padding: 20px;
-            text-align: center;
+            background-color: #050505;
+            color: #e0e0e0;
+            background-image:
+                radial-gradient(circle at 50% 50%, rgba(0, 225, 255, 0.03) 0%, transparent 50%),
+                linear-gradient(rgba(0, 255, 157, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 157, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
         }
 
-        #status {
-            margin-top: 20px;
-            font-weight: bold;
+        .cyber-border {
+            position: relative;
+            background: #111;
+            border: 1px solid #333;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #00ff9d;
+            border-left: 2px solid #00ff9d;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-border::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #00ff9d;
+            border-right: 2px solid #00ff9d;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-border:hover::before,
+        .cyber-border:hover::after {
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+        }
+
+        .glitch-text {
+            text-shadow: 2px 0 rgba(0, 255, 157, 0.2), -2px 0 rgba(0, 225, 255, 0.2);
+        }
+
+        .status-dot {
+            box-shadow: 0 0 10px currentColor;
         }
     </style>
 </head>
 
-<body>
-    <h1>Location Provider</h1>
-    <p>Share your location with the admin dashboard.</p>
-    <div>
-        <label for="provider-id">Device ID: </label>
-        <input type="text" id="provider-id" value="user-1">
+<body class="h-screen w-full flex flex-col items-center justify-center p-4 font-sans overflow-hidden relative">
+
+    <!-- Scanline Effect -->
+    <div
+        class="fixed inset-0 pointer-events-none z-0 opacity-10 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]">
     </div>
-    <br>
-    <button id="start-btn">Start Tracking</button>
-    <div id="status">Disconnected</div>
-    <div id="coords"></div>
+
+    <div class="z-10 w-full max-w-md">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <div
+                class="inline-flex items-center gap-2 mb-2 text-cyber-primary border border-cyber-primary/30 px-3 py-1 rounded-full bg-cyber-primary/5">
+                <span class="w-2 h-2 rounded-full bg-cyber-primary animate-pulse status-dot"></span>
+                <span class="text-xs font-mono font-bold tracking-widest">SYSTEM READY</span>
+            </div>
+            <h1 class="text-4xl font-black tracking-tighter text-white glitch-text mb-1">NEURAL<span
+                    class="text-cyber-primary">LINK</span></h1>
+            <p class="text-cyber-muted text-sm font-mono tracking-wide">LOCATION UPLINK TERMINAL</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="cyber-border p-8 rounded-sm shadow-2xl backdrop-blur-sm bg-[#0a0a0a]/90">
+
+            <!-- Setup Section -->
+            <div id="setup-panel" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-mono text-cyber-secondary uppercase tracking-wider">Operative
+                        Name</label>
+                    <div class="relative group">
+                        <input type="text" id="provider-name"
+                            class="relative z-10 w-full bg-black border border-gray-800 text-white p-4 font-mono focus:border-cyber-primary focus:outline-none focus:ring-1 focus:ring-cyber-primary transistion-all rounded-sm placeholder-gray-700"
+                            placeholder="YOUR NAME">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-mono text-cyber-secondary uppercase tracking-wider">Device
+                        Identity</label>
+                    <div class="relative group">
+                        <input type="text" id="provider-id" value="UNIT-ALPHA-01"
+                            class="relative z-10 w-full bg-black border border-gray-800 text-white p-4 font-mono focus:border-cyber-primary focus:outline-none focus:ring-1 focus:ring-cyber-primary transistion-all rounded-sm placeholder-gray-700"
+                            placeholder="ENTER ID...">
+                    </div>
+                </div>
+
+                <button id="start-btn"
+                    class="w-full group relative overflow-hidden bg-cyber-primary text-black font-bold font-mono py-4 px-6 tracking-wide hover:bg-white transition-colors duration-300">
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        INITIATE UPLINK
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Active Section (Hidden by default) -->
+            <div id="active-panel" class="hidden space-y-6">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                    <div>
+                        <div class="text-[10px] text-cyber-muted font-mono uppercase">Status</div>
+                        <div id="connection-status"
+                            class="text-cyber-primary font-bold font-mono tracking-tight text-lg">ONLINE</div>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full border border-cyber-primary/20 flex items-center justify-center relative">
+                        <div class="absolute inset-0 rounded-full border border-t-cyber-primary animate-spin"></div>
+                        <div class="w-8 h-8 rounded-full bg-cyber-primary/10 flex items-center justify-center">
+                            <div class="w-2 h-2 bg-cyber-primary rounded-full animate-ping"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-[10px] text-cyber-secondary font-mono uppercase">Latitude</span>
+                        <span id="lat-display" class="font-mono text-xl text-white">--.-----</span>
+                    </div>
+                    <div class="w-full bg-gray-900 h-1 overflow-hidden">
+                        <div class="h-full bg-cyber-secondary w-2/3 animate-pulse"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-[10px] text-cyber-secondary font-mono uppercase">Longitude</span>
+                        <span id="lng-display" class="font-mono text-xl text-white">--.-----</span>
+                    </div>
+                    <div class="w-full bg-gray-900 h-1 overflow-hidden">
+                        <div class="h-full bg-cyber-secondary w-1/2 animate-pulse animation-delay-500"></div>
+                    </div>
+                </div>
+
+                <div class="pt-4 mt-4 border-t border-dashed border-gray-800">
+                    <div class="w-full bg-black border border-red-900/50 p-3 flex items-center gap-3 group cursor-pointer hover:border-red-500/50 transition-colors"
+                        onclick="location.reload()">
+                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <span class="text-xs font-mono text-red-400">TERMINATE CONNECTION</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error/Status Info -->
+            <div id="status-msg" class="mt-4 text-center text-xs font-mono text-cyber-muted h-4">
+                // WAITING FOR INPUT...
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center opacity-40 hover:opacity-100 transition-opacity">
+            <div class="text-[10px] font-mono text-white">SECURE CONNECTION v2.0.4</div>
+            <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-cyber-primary to-transparent mx-auto mt-2">
+            </div>
+        </div>
+    </div>
 
     <script>
         const startBtn = document.getElementById('start-btn');
-        const statusDiv = document.getElementById('status');
-        const coordsDiv = document.getElementById('coords');
+        const setupPanel = document.getElementById('setup-panel');
+        const activePanel = document.getElementById('active-panel');
+        const statusMsg = document.getElementById('status-msg');
+
+        const connectionStatus = document.getElementById('connection-status');
+        const latDisplay = document.getElementById('lat-display');
+        const lngDisplay = document.getElementById('lng-display');
+
         const providerIdInput = document.getElementById('provider-id');
+        const providerNameInput = document.getElementById('provider-name');
         let ws;
         let watchId;
 
+        // Generate Random ID for easier testing
+        const randomId = 'UNIT-' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        providerIdInput.value = randomId;
+
         startBtn.addEventListener('click', () => {
-            if (ws) {
-                // Already connected, maybe stop?
-                return;
-            }
+            if (ws) return;
+
+            // UI Transition
+            setupPanel.classList.add('hidden');
+            activePanel.classList.remove('hidden');
+            statusMsg.textContent = "// INITIALIZING SENSORS...";
 
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             // Connect to the API port 1800
-            const wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=provider`;
+            const wsUrl = `${protocol}//${window.location.hostname}:1800/ws?type=provider&id=${providerIdInput.value}`;
 
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                statusDiv.textContent = 'Connected to Server';
-                statusDiv.style.color = 'green';
+                connectionStatus.textContent = 'CONNECTED';
+                connectionStatus.className = 'text-cyber-primary font-bold font-mono tracking-tight text-lg';
+                statusMsg.textContent = "// STREAMING DATA PACKETS";
                 startGeolocation();
             };
 
             ws.onclose = () => {
-                statusDiv.textContent = 'Disconnected';
-                statusDiv.style.color = 'red';
+                connectionStatus.textContent = 'OFFLINE';
+                connectionStatus.className = 'text-red-500 font-bold font-mono tracking-tight text-lg blink';
+                statusMsg.textContent = "// CONNECTION LOST";
+                statusMsg.className = "mt-4 text-center text-xs font-mono text-red-500 h-4";
                 stopGeolocation();
                 ws = null;
+
+                // Keep active panel shown but error state
+                // setTimeout(() => location.reload(), 3000); // Auto reset?
             };
 
             ws.onerror = (err) => {
                 console.error('WS Error', err);
-                statusDiv.textContent = 'Connection Error';
-                statusDiv.style.color = 'red';
+                connectionStatus.textContent = 'ERR_Connection';
+                connectionStatus.className = 'text-red-500 font-bold font-mono tracking-tight text-lg';
             };
         });
 
         function startGeolocation() {
             if (!navigator.geolocation) {
-                statusDiv.textContent = 'Geolocation not supported';
+                statusMsg.textContent = "// ERROR: NO GEOLOCATION SUPPORT";
                 return;
             }
 
             watchId = navigator.geolocation.watchPosition((position) => {
                 const { latitude, longitude } = position.coords;
-                coordsDiv.textContent = `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}`;
+
+                // Update Display
+                latDisplay.textContent = latitude.toFixed(5);
+                lngDisplay.textContent = longitude.toFixed(5);
+
+                const name = providerNameInput.value.trim() || `Agent ${providerIdInput.value}`;
 
                 const payload = {
                     id: providerIdInput.value,
                     lat: latitude,
                     lng: longitude,
-                    info: `User ${providerIdInput.value}`
+                    info: name
                 };
 
                 if (ws && ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify(payload));
-                    const time = new Date().toLocaleTimeString();
-                    statusDiv.textContent = `Sending data... (${time})`;
-                    statusDiv.style.color = 'blue';
+                    // Blink logic or log could go here
                 }
             }, (error) => {
                 console.error('Geo Error', error);
-                // Don't stop on timeout, just warn
-                statusDiv.textContent = 'Geolocation Warning: ' + error.message;
+                statusMsg.textContent = `// GEO_ERR: ${error.message}`;
+                statusMsg.className = "mt-4 text-center text-xs font-mono text-red-400 h-4";
             }, {
-                enableHighAccuracy: false, // Changed from true to avoid timeouts
-                timeout: 20000, // Increased to 20s
-                maximumAge: 10000
+                enableHighAccuracy: true,
+                timeout: 20000,
+                maximumAge: 5000
             });
         }
 

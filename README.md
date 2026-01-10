@@ -36,6 +36,49 @@ The project is fully containerized using Docker Compose.
     -   **Admin**: [http://localhost:1890](http://localhost:1890)
     -   **User**: [http://localhost:1880](http://localhost:1880)
 
+## HTTPS & Production Setup
+
+**Important**: The Browser Geolocation API requires `HTTPS` to work on devices other than `localhost`.
+
+To deploy this in production with HTTPS:
+
+1.  **Nginx Proxy Pass**: Configure Nginx on your host machine to forward traffic to the exposed Docker ports.
+    
+    Example Nginx Config Block:
+    ```nginx
+    server {
+        server_name map.yourdomain.com;
+        location / {
+            proxy_pass http://localhost:1890;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    }
+    
+    server {
+        server_name track.yourdomain.com;
+        location / {
+            proxy_pass http://localhost:1880;
+        }
+    }
+
+    server {
+        server_name api.yourdomain.com;
+        location / {
+            proxy_pass http://localhost:1800;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    }
+    ```
+
+2.  **Certbot**: Run `certbot` to generate SSL certificates for your Nginx setup.
+    ```bash
+    sudo certbot --nginx
+    ```
+
 ## Development
 
 To run locally without Docker (dev mode):
@@ -44,4 +87,3 @@ To run locally without Docker (dev mode):
 2.  **Admin**: `cd frontend-admin && npm run dev` (Default: 5173)
 3.  **User**: Serve `frontend-user` directory (e.g., `python3 -m http.server 8000`)
 
-*Note: You will need to revert port changes in `docker-compose.yml` and frontend code if you switch back to default dev ports.*

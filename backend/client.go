@@ -49,6 +49,9 @@ type Client struct {
 
 	// Role: "provider" or "viewer"
 	role string
+
+	// ID of the device (if provider)
+	id string
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -75,11 +78,6 @@ func (c *Client) readPump() {
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 
 		// If client is a provider, broadcast the message
-		// If client is a viewer, they generally shouldn't be sending location updates,
-		// but for simplicity we treat any inbound message as something to broadcast
-		// (or we can restrict it).
-		// The requirement: "Quando o servidor recebe um JSON de um Provedor, ele faz o 'broadcast'"
-
 		if c.role == "provider" {
 			log.Printf("Received from Provider: %s", message)
 			c.hub.broadcast <- message
@@ -146,9 +144,11 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		role = "viewer" // Default to viewer
 	}
 
-	log.Printf("New connection from %s with role: %s", r.RemoteAddr, role)
+	id := r.URL.Query().Get("id")
 
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), role: role}
+	log.Printf("New connection from %s with role: %s, ID: %s", r.RemoteAddr, role, id)
+
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), role: role, id: id}
 	client.hub.register <- client
 
 	// Allow collection of memory referenced by the caller by doing all work in
