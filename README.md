@@ -1,89 +1,102 @@
-# Real-Time Location System
+# 📡 Real-Time Location System (Estudo de Caso)
 
-A real-time location tracking system comprising a Go backend, a React Admin Dashboard, and a simple HTML/JS User Provider.
+Este projeto é um sistema completo de **Rastreamento de Localização em Tempo Real**, desenvolvido para demonstrar arquiteturas modernas de comunicação via WebSocket, interfaces reativas e infraestrutura conteinerizada.
 
-## Architecture
+O sistema permite que múltiplos "Agentes" (dispositivos móveis) transmitam sua geolocalização ao vivo para um "Painel de Comando" centralizado.
 
-- **Backend**: Go (Golang) WebSocket server.
-- **Frontend Admin**: React + Vite + TailwindCSS + MapLibre.
-- **Frontend User**: Vanilla HTML/JS.
+---
 
-## Deployment
+## 🏗 Arquitetura & Tecnologias
 
-The project is fully containerized using Docker Compose.
+O projeto é dividido em três microsserviços principais, todos orquestrados via **Docker Compose**:
 
-### Ports
+### 1. 🧠 Backend (Hub)
+- **Linguagem**: Go (Golang).
+- **Responsabilidade**: Atua como um servidor WebSocket central.
+- **Lógica**:
+    - Gerencia conexões de **Provedores** (quem envia localização) e **Visualizadores** (quem vê o mapa).
+    - **Broadcast Seletivo**: Recebe dados dos provedores e repassa instantaneamente para todos os visualizadores conectados.
+    - **Gestão de Estado**: Mantém uma lista de "Últimas Localizações Conhecidas" em memória para que novos administradores recebam o estado atual do mundo assim que conectam.
+    - **Detecção de Desconexão**: Monitora a queda de conexões websocket e avisa o Admin para remover o marcador do mapa imediatamente.
 
-| Service | Port | Description |
-|---------|------|-------------|
-| **Admin Dashboard** | `1890` | The main map interface for admins. |
-| **Location Provider** | `1880` | The user interface to send location data. |
-| **API / Backend** | `1800` | The WebSocket server. |
+### 2. 🗺 Frontend Admin (Viewer)
+- **Stack**: React + Vite + TailwindCSS + MapLibre/Mapbox.
+- **Design System**: "Earth Tech" / Industrial Clean.
+    - Paleta de Cores: Creme (`#f0f0d8`), Café (`#5a372c`) e Ferrugem (`#c94b0c`).
+- **Funcionalidades**:
+    - **Mapa Interativo**: Renderiza marcadores em tempo real.
+    - **Smart Selection**: Ao clicar num card lateral, o mapa voa até o alvo. Ao clicar novamente, reseta a visão global.
+    - **Feedback Visual**: Animações de pulso, tooltips detalhadas e indicadores de status online/offline.
 
-### How to Run
+### 3. 📱 Frontend User (Provider)
+- **Stack**: HTML5 + Vanilla JS + TailwindCSS (via CDN).
+- **Design System**: "Cyberpunk / Neural Link" (Tema Escuro).
+- **Funcionalidades**:
+    - Captura a geolocalização do dispositivo (GPS) via Geolocation API.
+    - Permite definir um **Nome de Operador** e **ID do Dispositivo**.
+    - Transmite latitude/longitude via WebSocket seguro (WSS) para o backend.
+    - Interface otimizada para Mobile.
 
-1.  **Prerequisites**: Ensure Docker and Docker Compose are installed.
-2.  **Start Services**:
-    Run the following command in the project root:
+---
 
-    ```bash
-    docker-compose up -d --build
-    ```
+## ⚡️ Instalação e Execução
 
-    *The `--build` flag ensures that the containers are built with the latest code changes.*
+### Pré-requisitos
+- Docker & Docker Compose instalados.
 
-3.  **Access Applications**:
-    -   **Admin**: [http://localhost:1890](http://localhost:1890)
-    -   **User**: [http://localhost:1880](http://localhost:1880)
+### Rodando Localmente (Desenvolvimento)
+1. Clone o repositório.
+2. Execute o comando de subida:
+   ```bash
+   docker-compose up -d --build
+   ```
+3. Acesse os serviços:
+   - **Admin Dashboard**: [http://localhost:1890](http://localhost:1890)
+   - **Provider (Simulador)**: [http://localhost:1880](http://localhost:1880)
 
-## HTTPS & Production Setup
+### Rodando em Produção (Linux/Cloud)
+Para produção, utilizamos **Nginx** como *Reverse Proxy* para gerenciar certificados SSL (HTTPS), que são **obrigatórios** para acesso ao GPS em dispositivos móveis reais.
 
-**Important**: The Browser Geolocation API requires `HTTPS` to work on devices other than `localhost`.
+1. Configure o arquivo `nginx_location.conf` (fornecido na raiz) no seu `/etc/nginx/sites-available/`.
+2. Gere certificados com Certbot:
+   ```bash
+   sudo certbot --nginx
+   ```
+3. O sistema operará nos subdomínios:
+   - `admin.seudominio.com` -> Porta 1890
+   - `location.seudominio.com` -> Porta 1880
+   - `api.seudominio.com` -> Porta 1800 (WSS)
 
-To deploy this in production with HTTPS:
+---
 
-1.  **Nginx Proxy Pass**: Configure Nginx on your host machine to forward traffic to the exposed Docker ports.
-    
-    Example Nginx Config Block:
-    ```nginx
-    server {
-        server_name map.yourdomain.com;
-        location / {
-            proxy_pass http://localhost:1890;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
-        }
-    }
-    
-    server {
-        server_name track.yourdomain.com;
-        location / {
-            proxy_pass http://localhost:1880;
-        }
-    }
+## 📂 Estrutura do Projeto
 
-    server {
-        server_name api.yourdomain.com;
-        location / {
-            proxy_pass http://localhost:1800;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
-        }
-    }
-    ```
+```
+/
+├── backend/                # Servidor Go (WebSockets)
+│   ├── main.go            # Entrada e roteamento
+│   ├── hub.go             # Lógica de broadcast e gestão de salas
+│   └── client.go          # Gerenciamento de conexão individual (Pump Read/Write)
+│
+├── frontend-admin/         # Dashboard React
+│   ├── src/components/    # Componentes (Map.jsx)
+│   └── src/App.jsx        # Lógica principal e Interface
+│
+├── frontend-user/          # App Mobile Web
+│   └── index.html         # Single Page Application
+│
+├── docker-compose.yml     # Orquestração dos containers
+├── nginx_location.conf    # Configuração de Proxy Reverso recomendada
+└── README.md              # Documentação
+```
 
-2.  **Certbot**: Run `certbot` to generate SSL certificates for your Nginx setup.
-    ```bash
-    sudo certbot --nginx
-    ```
+## 🛠 Detalhes Técnicos Implementados
 
-## Development
+1.  **WebSocket Seguro (WSS)**: Configuração preparada para produção, permitindo conexões criptografadas essenciais para segurança e funcionamento do GPS.
+2.  **In-Memory Persistence**: O Backend armazena a última posição de cada ID. Se você der F5 no Admin, os marcadores reaparecem instantaneamente (não começam vazios).
+3.  **Clean Disconnect**: Se um celular perde conexão ou fecha a aba, o Backend detecta o fim do stream TCP e envia um evento `type: "disconnect"` para o Admin, que remove o ícone do mapa.
+4.  **Z-Index & Overlays**: Soluções de UI aplicadas para garantir que inputs funcionem perfeitamente mesmo com elementos decorativos "Cyberpunk".
 
-To run locally without Docker (dev mode):
+---
 
-1.  **Backend**: `cd backend && go run .` (Default: 8080)
-2.  **Admin**: `cd frontend-admin && npm run dev` (Default: 5173)
-3.  **User**: Serve `frontend-user` directory (e.g., `python3 -m http.server 8000`)
-
+Este projeto serve como um **template robusto** para sistemas de logística, delivery, monitoramento de frotas ou jogos baseados em localização.
